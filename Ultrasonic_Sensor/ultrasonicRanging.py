@@ -6,6 +6,7 @@
 ######################################################
 
 import RPi.GPIO as GPIO
+#import numpy as np # Debugging Only
 import time
 
 trigPin = 23
@@ -40,10 +41,14 @@ def setup():
     GPIO.setup(echoPin, GPIO.IN)    # set echoPin to INPUT mode
 
 def loop():
+#    distance_vec = np.array([])     # Debugging Only
     while(True):
         distance = getSonar() # get distance
         print ("The distance is : %.2f cm"%(distance))
-        time.sleep(1)        
+        time.sleep(1)
+        ## for Debuggins ##
+#        distance_vec = np.append(distance_vec,distance) # Debugging Only
+#        print(distance_vec) # Debugging Only
         
 if __name__ == '__main__':     # Program entrance
     print ('Sonic Sensor is starting...')
