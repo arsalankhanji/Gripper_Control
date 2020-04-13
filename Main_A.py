@@ -24,7 +24,6 @@ from Stepper_Control import stepperControl as sc
 from Ultrasonic_Sensor import ultrasonicRanging as ur
 from Force_Sensor import ADC as adc
 from Push_Button import pushButton as pb
-import numpy as np
 import time
 
 sc.setup() # initializing Stepper Control
