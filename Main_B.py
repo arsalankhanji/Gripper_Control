@@ -1,8 +1,8 @@
 ######################################################
 #             MASTER CONTROL SCRIPT                  #
 ######################################################
-# Version: 1.00                                      #                    
-# Date: 13 April 2020                                #
+# Version: 1.01                                      #                    
+# Date: 17 April 2020                                #
 # Author: Arsalan                                    #
 #----------------------------------------------------#
 #---------------Motor Control Help-------------------#
@@ -17,7 +17,7 @@
 #----------------------------------------------------#
 #----------------------------------------------------#
 #--------------------ADC Help------------------------#
-# distance = ur.getSonar() # where distance is in cm
+# ADCvalue = adc.getADC() # where ADC value is in volts
 #----------------------------------------------------#
 #----------------------------------------------------#
 #----------------------WARNING-----------------------#
@@ -37,16 +37,27 @@ mc.setup() # initializing Motor Control
 ur.setup() # initializing Ultrasonic Sensor
 pb.setup() # initializing Push Button
 
+# setting variables
+dutyCycle = 80 # varies from 0-100%
+minGripDist = 2.0 # cm. [min. gripping distance]
+maxGripDist = 10.0 # cm. [max. gripping distance]
+ADCthresh = 2.6 # volts. [ADC value threshold for tight grip]
+
 try:        
     while(True):
         distance = ur.getSonar()
         ADCvalue = adc.getADC()
-    #    status = pb.getButton()
-    #    if ((distance<9.0) & (status==0)):
-        if ((4.0<distance<10.0) & (ADCvalue<1.65)):
-            mc.motor(30)
-        else:
+        status = pb.getButton()
+        
+        if ((minGripDist<distance<maxGripDist) & (ADCvalue<ADCthresh)):
+            mc.motor(-dutyCycle) # close gripper          
+        elif ((minGripDist<distance<maxGripDist) & (ADCvalue>ADCthresh)):
             mc.motorStop()
+        else:
+            if status==1:
+                mc.motorStop()
+            else:
+                mc.motor(dutyCycle) # open gripper      
             
 except KeyboardInterrupt: # Press ctrl-c to end the program.
     mc.motorStop()

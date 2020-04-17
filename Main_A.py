@@ -2,8 +2,11 @@
 #             MASTER CONTROL SCRIPT                  #
 ######################################################
 # Version: 1.01                                      #                    
-# Date: 10 April 2020                                 #
+# Date: 10 April 2020                                #
 # Author: Arsalan                                    #
+# **********PLEASE NOTE******************************#
+# This script is gonna go obsolete soon as we are    #
+# moving to using a DC motor as Gripper Engine       #
 #----------------------------------------------------#
 #-------------Stepper Control Help-------------------#
 # numRev = 1; # number of revolutions the stepper has to make
@@ -16,7 +19,7 @@
 #----------------------------------------------------#
 #----------------------------------------------------#
 #--------------------ADC Help------------------------#
-# distance = ur.getSonar() # where distance is in cm
+# ADCvalue = adc.getADC() # where value is in volts
 #----------------------------------------------------#
 ######################################################
 
@@ -33,8 +36,8 @@ pb.setup() # initializing Push Button
 while(True):
     distance = ur.getSonar()
     ADCvalue = adc.getADC()
-#    status = pb.getButton()
-#    if ((distance<9.0) & (status==0)):
+    status = pb.getButton()
+    
     if ((4.0<distance<9.0) & (ADCvalue<1.65)):
         sc.moveGripper(1,0.2,1)
         

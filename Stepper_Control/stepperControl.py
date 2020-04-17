@@ -32,7 +32,7 @@ def moveGripper(numRev,tRev, dirRev):
 if __name__ == '__main__':     # Program entrance
     print ('Stepper Control is starting...')
     setup()
-    moveGripper(1,0.2, 0)
+    moveGripper(100,0.1, 0)
     
 
 
