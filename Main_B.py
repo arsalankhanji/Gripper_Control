@@ -31,6 +31,8 @@ from Motor_Control import motorControl as mc
 from Ultrasonic_Sensor import ultrasonicRanging as ur
 from Force_Sensor import ADC as adc
 from Push_Button import pushButton as pb
+from Object_Detection import camera
+import multiprocessing
 import time
 
 mc.setup() # initializing Motor Control
@@ -42,6 +44,10 @@ dutyCycle = 80 # varies from 0-100%
 minGripDist = 2.0 # cm. [min. gripping distance]
 maxGripDist = 10.0 # cm. [max. gripping distance]
 ADCthresh = 2.6 # volts. [ADC value threshold for tight grip]
+
+# Start Camera Feed (parallel process 1)
+P1 = multiprocessing.Process(target=camera.startCamera)
+P1.start()
 
 try:        
     while(True):
@@ -62,6 +68,7 @@ try:
 except KeyboardInterrupt: # Press ctrl-c to end the program.
     mc.motorStop()
     mc.destroy()
+    #P1.terminate()
         
         
         

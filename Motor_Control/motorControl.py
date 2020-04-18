@@ -25,7 +25,7 @@ def setup():
         
     p = GPIO.PWM(enablePin,1000) # creat PWM and set Frequence to 1KHz
     p.start(0)
-	
+    
 # motor function: determine the direction and speed of the motor according to the input ADC value input
 def motor(value):
     GPIO.output(standbyPin,GPIO.HIGH)
@@ -61,7 +61,7 @@ if __name__ == '__main__':  # Program entrance
     print ('Program is starting ... ')
     setup()
     try:
-        value = 40 # -40 closes / +40 opens
+        value = -40 # -40 closes / +40 opens
         loop(value)
     except KeyboardInterrupt: # Press ctrl-c to end the program.
         destroy()
