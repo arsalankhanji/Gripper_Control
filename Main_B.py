@@ -1,8 +1,8 @@
 ######################################################
 #             MASTER CONTROL SCRIPT                  #
 ######################################################
-# Version: 1.01                                      #                    
-# Date: 17 April 2020                                #
+# Version: 1.02                                      #                    
+# Date: 20 April 2020                                #
 # Author: Arsalan                                    #
 #----------------------------------------------------#
 #---------------Motor Control Help-------------------#
@@ -33,6 +33,7 @@ from Force_Sensor import ADC as adc
 from Push_Button import pushButton as pb
 from Object_Detection import camGripper
 import multiprocessing
+from multiprocessing import Value, Lock
 import time
 
 mc.setup() # initializing Motor Control
@@ -45,15 +46,26 @@ minGripDist = 2.0 # cm. [min. gripping distance]
 maxGripDist = 10.0 # cm. [max. gripping distance]
 ADCthresh = 2.6 # volts. [ADC value threshold for tight grip]
 
+# creating shared variables for multi-processing
+frameRate = Value('f',1)
+stopFlag = Value('i',0)
+lock = Lock()
+
 # Start Camera Feed (parallel process 1)
-P1 = multiprocessing.Process(target=camGripper.startCamera)
+print('Initializing Camera ...')
+P1 = multiprocessing.Process(target=camGripper.startCamera , args=(frameRate,stopFlag,lock) )
 P1.start()
 
-try:        
+try:
+    print('Initializing Gripper Control ...')
+    print('********************************************')
+    print("**  Press 'Ctrl + C' to terminate script  **")
+    print('********************************************')
     while(True):
         distance = ur.getSonar()
         ADCvalue = adc.getADC()
         status = pb.getButton()
+        #print('fps is: %2.0f' %(frameRate.value), end='\r') # for Debugging Only
         
         if ((minGripDist<distance<maxGripDist) & (ADCvalue<ADCthresh)):
             mc.motor(-dutyCycle) # close gripper          
@@ -63,12 +75,14 @@ try:
             if status==1:
                 mc.motorStop()
             else:
-                mc.motor(dutyCycle) # open gripper      
+                mc.motor(dutyCycle) # open gripper     
             
 except KeyboardInterrupt: # Press ctrl-c to end the program.
     mc.motorStop()
     mc.destroy()
-    P1.terminate()
+    with lock:
+        stopFlag.value = 1
+    #P1.terminate() # for force closing the process
         
         
         
