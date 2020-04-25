@@ -5,7 +5,7 @@
 # Date: 18 April 2020                                #
 # Author: Arsalan                                    #
 #----------------------------------------------------#
-## Some of the code is copied from:                 ##
+## Parts of the code is copied from:                ##
 ## https://github.com/EdjeElectronics/              ##
 ######################################################
 
@@ -20,8 +20,7 @@ import datetime
 # Set up camera constants
 IM_WIDTH = 640 # 1280   #  Use smaller resolution for
 IM_HEIGHT = 480 # 720   #  faster framerate
-camera_type = 'picamera'
-frameRate = 24 # fps
+frameRate = 30 # fps
 
 def startCamera(frame_rate_calc, stopFlag , lock):
 
@@ -78,5 +77,9 @@ def startCamera(frame_rate_calc, stopFlag , lock):
     cv2.destroyAllWindows()
     
 if __name__ == '__main__':  # Program entrance
+    frame_rate_calc.value = 1
     startCamera(1,0,0)
-
+    # WARNING! In order to run this script in main '.value' needs to be removed from 
+    # the following variables in the script above: frame_rate_calc and stopFlag.
+    # But remember to put them back if you want to run the script in Main_B.py with
+    # multi-processing and shared variables

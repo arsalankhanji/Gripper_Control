@@ -61,7 +61,7 @@ if __name__ == '__main__':  # Program entrance
     print ('Program is starting ... ')
     setup()
     try:
-        value = -40 # -40 closes / +40 opens
+        value = 40 # -40 closes / +40 opens
         loop(value)
     except KeyboardInterrupt: # Press ctrl-c to end the program.
         destroy()

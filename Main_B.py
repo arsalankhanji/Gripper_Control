@@ -21,24 +21,29 @@
 #----------------------------------------------------#
 #----------------------------------------------------#
 #----------------------WARNING-----------------------#
-# DONOT stop script by pressing red button as the    #
+# DONOT stop script by terminating script as the     #
 # motor might go in overspeed with full duty cycle   #
 # INSTEAD USE "Ctrl + C"                             #
 #----------------------------------------------------#
 ######################################################
 
+# Importing Modules
 from Motor_Control import motorControl as mc
 from Ultrasonic_Sensor import ultrasonicRanging as ur
 from Force_Sensor import ADC as adc
 from Push_Button import pushButton as pb
-from Object_Detection import camGripper
+from Object_Detection import camGripper, camTensorFlow
 import multiprocessing
 from multiprocessing import Value, Lock
 import time
 
+# INPUTS
+camSelect = 1  # || 0 -> Simple Camera || 1-> TensorFlow Detector || 2 -> TensorFlow LITE Detector
+
+# Initializing Modules
 mc.setup() # initializing Motor Control
 ur.setup() # initializing Ultrasonic Sensor
-pb.setup() # initializing Push Button
+pb.setup() # initializing Push Button / End Stop Switch
 
 # setting variables
 dutyCycle = 80 # varies from 0-100%
@@ -51,11 +56,25 @@ frameRate = Value('f',1)
 stopFlag = Value('i',0)
 lock = Lock()
 
-# Start Camera Feed (parallel process 1)
-print('Initializing Camera ...')
-P1 = multiprocessing.Process(target=camGripper.startCamera , args=(frameRate,stopFlag,lock) )
-P1.start()
-
+# selecting camera detection type
+if camSelect == 0 :
+    # Start Camera Feed (parallel process 1)
+    print('Initializing Camera ...')
+    P1 = multiprocessing.Process(target=camGripper.startCamera , args=(frameRate,stopFlag,lock) )
+    P1.start()
+elif camSelect == 1 :
+    # Start TF Object Detection (parallel process 1)
+    print('Initializing Camera & Detection ...')
+    P1 = multiprocessing.Process(target=camTensorFlow.startObjectDetect , args=(frameRate,stopFlag,lock) )
+    P1.start()
+elif camSelect == 2 :        
+    # Start TF Lite Object Detection (parallel process 1)
+    print('Initializing Camera & Detection ...')
+    print('Functionality Under Development')
+    
+#--------------------#    
+#   MAIN PROGRAM     #
+#--------------------#
 try:
     print('Initializing Gripper Control ...')
     print('********************************************')
