@@ -38,7 +38,7 @@ from multiprocessing import Value, Lock
 import time
 
 # INPUTS
-camSelect = 1  # || 0 -> Simple Camera || 1-> TensorFlow Detector || 2 -> TensorFlow LITE Detector
+camSelect = 0  # || 0 -> Simple Camera || 1-> TensorFlow Detector || 2 -> TensorFlow LITE Detector
 
 # Initializing Modules
 mc.setup() # initializing Motor Control

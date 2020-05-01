@@ -20,7 +20,7 @@ import datetime
 # Set up camera constants
 IM_WIDTH = 640 # 1280   #  Use smaller resolution for
 IM_HEIGHT = 480 # 720   #  faster framerate
-frameRate = 30 # fps
+frameRate = 90 # fps
 
 def startCamera(frame_rate_calc, stopFlag , lock):
 
@@ -77,7 +77,7 @@ def startCamera(frame_rate_calc, stopFlag , lock):
     cv2.destroyAllWindows()
     
 if __name__ == '__main__':  # Program entrance
-    frame_rate_calc.value = 1
+    frame_rate_calc = 1
     startCamera(1,0,0)
     # WARNING! In order to run this script in main '.value' needs to be removed from 
     # the following variables in the script above: frame_rate_calc and stopFlag.
