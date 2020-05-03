@@ -34,11 +34,11 @@ from Force_Sensor import ADC as adc
 from Push_Button import pushButton as pb
 from Object_Detection import camGripper, camTensorFlow
 import multiprocessing
-from multiprocessing import Value, Lock
+from multiprocessing import Value, Array, Lock
 import time
 
 # INPUTS
-camSelect = 0  # || 0 -> Simple Camera || 1-> TensorFlow Detector || 2 -> TensorFlow LITE Detector
+camSelect = 1  # || 0 -> Simple Camera || 1-> TensorFlow Detector || 2 -> TensorFlow LITE Detector
 
 # Initializing Modules
 mc.setup() # initializing Motor Control
@@ -65,7 +65,10 @@ if camSelect == 0 :
 elif camSelect == 1 :
     # Start TF Object Detection (parallel process 1)
     print('Initializing Camera & Detection ...')
-    P1 = multiprocessing.Process(target=camTensorFlow.startObjectDetect , args=(frameRate,stopFlag,lock) )
+    #topClass = Value('f',0)
+    classes = Array('f',3) # creating shared variable to access detected classes
+    #scores = Array('f',[0]*100) # creating shared variable to access detected class scores
+    P1 = multiprocessing.Process(target=camTensorFlow.startObjectDetect , args=(frameRate,classes,stopFlag,lock) )
     P1.start()
 elif camSelect == 2 :        
     # Start TF Lite Object Detection (parallel process 1)
@@ -85,6 +88,7 @@ try:
         ADCvalue = adc.getADC()
         status = pb.getButton()
         #print('fps is: %2.0f' %(frameRate.value), end='\r') # for Debugging Only
+        print(classes[:]) 
         
         if ((minGripDist<distance<maxGripDist) & (ADCvalue<ADCthresh)):
             mc.motor(-dutyCycle) # close gripper          

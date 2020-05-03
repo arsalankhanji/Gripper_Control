@@ -24,11 +24,11 @@ from utils import label_map_util
 from utils import visualization_utils as vis_util
 
 # Set up camera constants
-IM_WIDTH = 640 # 1280   #  Use smaller resolution for
-IM_HEIGHT = 480 # 720   #  faster framerate
+IM_WIDTH = 320 #640 # 1280   #  Use smaller resolution for
+IM_HEIGHT = 240 #480 # 720   #  faster framerate
 frameRate = 30 # fps
 
-def startObjectDetect(frame_rate_calc, stopFlag , lock):
+def startObjectDetect(frame_rate_calc, classes_Share, stopFlag , lock):
 
 	currentDT = datetime.datetime.now()
 	currentDT = currentDT.strftime("%Y-%m-%d_%H-%M-%S")
@@ -128,7 +128,9 @@ def startObjectDetect(frame_rate_calc, stopFlag , lock):
 		(boxes, scores, classes, num) = sess.run(
 			[detection_boxes, detection_scores, detection_classes, num_detections],
 			feed_dict={image_tensor: frame_expanded})
-
+			
+		classes_Share = [1.0, 2.0, 3.0] #classes[0]
+		
 		# Draw the results of the detection (aka 'visulaize the results')
 		vis_util.visualize_boxes_and_labels_on_image_array(
 			frame,
