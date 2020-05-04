@@ -16,7 +16,7 @@ standbyPin = 5
 
 def setup():
     global p
-    GPIO.setwarnings(False) # Turning off warnings
+    #GPIO.setwarnings(False) # Turning off warnings
     GPIO.setmode(GPIO.BCM) # Broadcom Memory mode  
     GPIO.setup(motoRPin1,GPIO.OUT)   # set pins to OUTPUT mode
     GPIO.setup(motoRPin2,GPIO.OUT)
