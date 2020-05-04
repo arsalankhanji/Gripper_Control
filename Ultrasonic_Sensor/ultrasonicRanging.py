@@ -45,7 +45,7 @@ def loop():
     while(True):
         distance = getSonar() # get distance
         print ("The distance is : %.2f cm"%(distance))
-        time.sleep(1)
+        #time.sleep(1)
         ## for Debuggins ##
 #        distance_vec = np.append(distance_vec,distance) # Debugging Only
 #        print(distance_vec) # Debugging Only
