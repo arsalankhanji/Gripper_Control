@@ -49,7 +49,7 @@ pb.setup() # initializing Push Button / End Stop Switch
 dutyCycle = 80 # varies from 0-100%
 minGripDist = 2.0 # cm. [min. gripping distance]
 maxGripDist = 12.0 # cm. [max. gripping distance]
-ADCthresh = 2.6 # volts. [ADC value threshold for tight grip]
+ADCthresh = 2.0 # volts. [ADC value threshold for tight grip]
 
 # creating shared variables for multi-processing
 frameRate = Value('f',1)
@@ -115,21 +115,21 @@ try:
             # topClass_tminus1 = topClass_t0
             # topClass_t0 = classes[0]
 
-        print ("%.2f cm , %.2f volts , %i "%(distance,ADCvalue,status))
-        topClass = 77 #classes[0]  
+        #print ("%.2f cm , %.2f volts , %i "%(distance,ADCvalue,status))
+        topClass = classes[0]  
         # 75 is remote and 77 is cell phone in label map
         #if (topClass == 77) or (topClass == 75):
         if ((minGripDist<distance<maxGripDist) & (ADCvalue<ADCthresh)):
-            print('gripper opening')
-            #mc.motor(-dutyCycle) # close gripper          
+            #print('gripper closing')
+            mc.motor(-dutyCycle) # close gripper          
         elif ((minGripDist<distance<maxGripDist) & (ADCvalue>ADCthresh)):
             mc.motorStop()
         elif ( (distance>maxGripDist) & (ADCvalue<ADCthresh)):
             if status==1:
                 mc.motorStop()
             elif status == 0:
-                print('gripper opening')
-                #mc.motor(dutyCycle) # open gripper 
+                #print('gripper opening')
+                mc.motor(dutyCycle) # open gripper 
         # else:                
             # if status==1:
                 # mc.motorStop()
