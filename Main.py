@@ -49,7 +49,7 @@ pb.setup() # initializing Push Button / End Stop Switch
 dutyCycle = 80 # varies from 0-100%
 minGripDist = 2.0 # cm. [min. gripping distance]
 maxGripDist = 12.0 # cm. [max. gripping distance]
-ADCthresh = 2.4 # volts. [ADC value threshold for tight grip]
+ADCthresh = 3.0 # volts. [ADC value threshold for tight grip]
 
 # creating shared variables for multi-processing
 frameRate = Value('f',1)
@@ -104,11 +104,11 @@ try:
             topClass = classes[0]
         
         if (topClass == 77) or (topClass == 75):
-            if ((minGripDist<distance<maxGripDist) & (ADCvalue<ADCthresh)):
+            if ((minGripDist<distance<maxGripDist) & (ADCvalue>ADCthresh)):
                 mc.motor(-dutyCycle) # close gripper          
-            elif ((minGripDist<distance<maxGripDist) & (ADCvalue>ADCthresh)):
+            elif ((minGripDist<distance<maxGripDist) & (ADCvalue<ADCthresh)):
                 mc.motorStop()
-            elif ( (distance>maxGripDist) & (ADCvalue<ADCthresh)):
+            elif ( (distance>maxGripDist) & (ADCvalue>ADCthresh)):
                 if status==1:
                     mc.motorStop()
                 elif status == 0:
