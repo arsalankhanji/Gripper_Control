@@ -36,6 +36,7 @@ from Object_Detection import camGripper, camTensorFlow
 import multiprocessing
 from multiprocessing import Value, Array, Lock
 import time
+import csv
 
 # INPUTS
 camSelect = 0  # || 0 -> Simple Camera || 1-> TensorFlow Detector || 2 -> TensorFlow LITE Detector
@@ -44,6 +45,13 @@ camSelect = 0  # || 0 -> Simple Camera || 1-> TensorFlow Detector || 2 -> Tensor
 mc.setup() # initializing Motor Control
 ur.setup() # initializing Ultrasonic Sensor
 pb.setup() # initializing Push Button / End Stop Switch
+
+# Initializing Data Logger
+logFile = open("tmp/dataLog.csv" , "w" , newline="")
+csvObj = csv.writer(logFile)
+
+# Initializing Clock
+absStartTime = time.time()
 
 # setting variables
 dutyCycle = 80 # varies from 0-100%
@@ -114,7 +122,9 @@ try:
                 elif status == 0:
                     mc.motor(dutyCycle) # open gripper 
 
-      
+        currentTime = time.time() - absStartTime
+        csvObj.writerow([ round(currentTime,2) , round(distance,2) , round(ADCvalue,2) , round(status,0) , round(topClass,2) ])
+        
         loopCount = loopCount + 1        
                  
                        
