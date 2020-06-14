@@ -4,11 +4,11 @@ import numpy as np
 
 style.use('ggplot')
 
-time , distance , FSRvalue , EndStop , TopClass = np.loadtxt('dataLog.csv' , unpack=True , delimiter=",")
+time , distanceRaw , FSRvalue , EndStop , TopClass , distanceFilt = np.loadtxt('dataLog.csv' , unpack=True , delimiter=",")
 
 fig , axs =  plt.subplots(4 , sharex=True )
 fig.suptitle('Gripper Data Log')
-axs[0].plot( time , distance)
+axs[0].plot( time , distanceRaw , time , distanceFilt)
 axs[0].set( ylabel = 'Sonic [cm]' )
 axs[1].plot( time , FSRvalue)
 axs[1].set( ylabel = 'FSR [volts]')

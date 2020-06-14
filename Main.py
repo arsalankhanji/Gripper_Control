@@ -40,6 +40,7 @@ import csv
 
 # INPUTS
 camSelect = 0  # || 0 -> Simple Camera || 1-> TensorFlow Detector || 2 -> TensorFlow LITE Detector
+alpha = 0.5    # Exponential Moving Average (EMA) Filter Alpha. Alpha = 1 --> no filtering
 
 # Initializing Modules
 mc.setup() # initializing Motor Control
@@ -93,11 +94,15 @@ try:
     print("**  Press 'Ctrl + C' to terminate script  **")
     print('********************************************')
     loopCount = 1
+    distance_old = ur.getSonar()
+    
     while(True):
-        distance = ur.getSonar()
+        distanceRaw = ur.getSonar()
         ADCvalue = adc.getADC()
         status = pb.getButton()
-        
+        # Filtering Sonic Distance with EMA Filter
+        distance = (1 - alpha)*distance_old + alpha*distanceRaw
+        distance_old = distance
         # ------------- USE For Debugging Only -------------#
         #print(classes[:]) 
         #print(scores[:])
@@ -123,7 +128,7 @@ try:
                     mc.motor(dutyCycle) # open gripper 
 
         currentTime = time.time() - absStartTime
-        csvObj.writerow([ round(currentTime,2) , round(distance,2) , round(ADCvalue,2) , round(status,0) , round(topClass,2) ])
+        csvObj.writerow([ round(currentTime,2) , round(distanceRaw,2) , round(ADCvalue,2) , round(status,0) , round(topClass,2) , round(distance,2) ])
         
         loopCount = loopCount + 1        
                  
