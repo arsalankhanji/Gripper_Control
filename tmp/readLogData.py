@@ -15,6 +15,6 @@ axs[1].set( ylabel = 'FSR [volts]')
 axs[2].plot( time , EndStop)
 axs[2].set( ylabel = 'End Stop [-]' )
 axs[3].plot( time , TopClass)
-axs[3].set( ylabel = 'Detected Class [-]' )
+axs[3].set( ylabel = 'Detection' )
 
 plt.show()
