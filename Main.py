@@ -2,7 +2,7 @@
 #             MASTER CONTROL SCRIPT                  #
 ######################################################
 # Version: 1.03                                      #                    
-# Date: 04 May 2020                                #
+# Date: 04 May 2020                                  #
 # Author: Arsalan                                    #
 #----------------------------------------------------#
 #---------------Motor Control Help-------------------#
@@ -39,8 +39,8 @@ import time
 import csv
 
 # INPUTS
-camSelect = 0  # || 0 -> Simple Camera || 1-> TensorFlow Detector || 2 -> TensorFlow LITE Detector
-alpha = 0.5    # Exponential Moving Average (EMA) Filter Alpha. Alpha = 1 --> no filtering
+camSelect = 1  # || 0 -> Simple Camera || 1-> TensorFlow Detector || 2 -> TensorFlow LITE Detector
+alpha = 0.15    # Exponential Moving Average (EMA) Filter Alpha. Alpha = 1 --> no filtering
 
 # Initializing Modules
 mc.setup() # initializing Motor Control
@@ -58,7 +58,7 @@ absStartTime = time.time()
 dutyCycle = 80 # varies from 0-100%
 minGripDist = 2.0 # cm. [min. gripping distance]
 maxGripDist = 12.0 # cm. [max. gripping distance]
-ADCthresh = 3.0 # volts. [ADC value threshold for tight grip]
+ADCthresh = 2.8 # volts. [ADC value threshold for tight grip]
 
 # creating shared variables for multi-processing
 frameRate = Value('f',1)
@@ -111,21 +111,27 @@ try:
         
         if camSelect == 0:
             topClass = 75
+            topScore = 1.0
         elif camSelect == 1:
             topClass = classes[0]  # 75 is remote and 77 is cell phone in label map
+            topScore = scores[0]  # reading score of the first class
         elif camSelect == 2:
             topClass = classes[0]
+            topScore = scores[0]
         
-        if (topClass == 77) or (topClass == 75):
-            if ((minGripDist<distance<maxGripDist) & (ADCvalue>ADCthresh)):
-                mc.motor(-dutyCycle) # close gripper          
-            elif ((minGripDist<distance<maxGripDist) & (ADCvalue<ADCthresh)):
-                mc.motorStop()
-            elif ( (distance>maxGripDist) & (ADCvalue>ADCthresh)):
-                if status==1:
+        if (ADCvalue<ADCthresh):
+            mc.motorStop()
+        else:
+            if ( ((topClass == 1) or (topClass == 77) or (topClass == 75)) & (topScore > 0.2) ):
+                if ((minGripDist<distance<maxGripDist) & (ADCvalue>ADCthresh)):
+                    mc.motor(-dutyCycle) # close gripper          
+                elif ((minGripDist<distance<maxGripDist) & (ADCvalue<ADCthresh)):
                     mc.motorStop()
-                elif status == 0:
-                    mc.motor(dutyCycle) # open gripper 
+                elif ( (distance>maxGripDist) & (ADCvalue>ADCthresh)):
+                    if status==1:
+                        mc.motorStop()
+                    elif status == 0:
+                        mc.motor(dutyCycle) # open gripper 
 
         currentTime = time.time() - absStartTime
         csvObj.writerow([ round(currentTime,2) , round(distanceRaw,2) , round(ADCvalue,2) , round(status,0) , round(topClass,2) , round(distance,2) ])
