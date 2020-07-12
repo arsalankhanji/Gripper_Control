@@ -8,6 +8,7 @@
 import RPi.GPIO as GPIO
 #import numpy as np # Debugging Only
 import time
+import csv
 
 trigPin = 23
 echoPin = 24
@@ -53,8 +54,19 @@ def loop():
 if __name__ == '__main__':     # Program entrance
     print ('Sonic Sensor is starting...')
     setup()
+    # Initializing Data Logger
+    logFile = open("tmp/dataLog.csv" , "w" , newline="")
+    csvObj = csv.writer(logFile)
+    # Initializing Clock
+    absStartTime = time.time()
+    
     try:
-        loop()
+        while(True):
+            distance = getSonar() # get distance
+            currentTime = time.time() - absStartTime
+            print ("The distance is : %.2f cm"%(distance))
+            csvObj.writerow([ round(currentTime,2) , round(distance,2) ])
+
     except KeyboardInterrupt:  # Press ctrl-c to end the program.
         GPIO.cleanup()         # release GPIO resource
 
